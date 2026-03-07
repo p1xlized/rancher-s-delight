@@ -60,7 +60,7 @@ public class GameApp extends GameApplication {
         // Create a simple HUD at the bottom
 
 
-        Text hintText = new Text("WASD to Move | Goal: Find the Brown Tiles");
+        Text hintText = new Text("WASD to Move");
         hintText.setFill(Color.WHITE);
         hintText.setFont(Font.font(18));
         hintText.setTranslateX(20);

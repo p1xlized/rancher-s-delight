@@ -44,7 +44,7 @@ public class MapGenerator {
 
         // If this tile is already brown, we still allow a small chance to pass through
         // to help islands merge, but we reduce recursion to prevent crashes.
-        if (grid[x][y].equals("brownTile") && chance < 0.5) return;
+        if (grid[x][y].equals("brownTile") && chance < 0.6) return;
 
         grid[x][y] = "brownTile";
 
