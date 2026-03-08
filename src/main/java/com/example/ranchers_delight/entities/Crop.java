@@ -14,9 +14,11 @@ public abstract class Crop {
     private GrowthStage stage;
     private boolean isAlive;
 
+    private int cycles;
     public Crop() {
         this.stage = GrowthStage.PLANTED; // Starts at -10
         this.isAlive = true;
+        this.cycles = 0;
     }
 
     // Common logic for all crops
@@ -44,6 +46,7 @@ public abstract class Crop {
     public GrowthStage getStage() { return stage; }
     public boolean isAlive() { return isAlive; }
 
+    public int getCycle() { return cycles; }
     // Abstract method: How each crop reacts to the environment
     public abstract void processDay();
 }
