@@ -15,9 +15,6 @@ public class Player {
         this.inventory = new Item[10];
     }
 
-    /**
-     * Loops through the array and puts the item in the first null (empty) slot.
-     */
     public boolean addItemToInventory(Item newItem) {
         for (int i = 0; i < inventory.length; i++) {
             if (inventory[i] == null) {
