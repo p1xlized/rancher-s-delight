@@ -36,7 +36,7 @@ public class MainMenu extends SubScene {
 
     private final List<SaveSlotRow> saveSlotRows = new ArrayList<>();
 
-    // We change Runnable to Consumer<String> so we can pass the chosen save file name back to GameApp
+    // Runnable to Consumer<String> so we can pass the chosen save file name back to GameApp
     public MainMenu(Consumer<String> onFileSelected) {
         this(onFileSelected, false);
     }
@@ -78,7 +78,7 @@ public class MainMenu extends SubScene {
             actionButtons.getChildren().add(btnBackToGame);
         }
 
-        var btnExit = new Button("EXIT TO ARCH");
+        var btnExit = new Button("EXIT TO DESKTOP");
         btnExit.setStyle("-fx-font-size: 18px; -fx-background-color: #442222; -fx-text-fill: white;");
         btnExit.setOnAction(_ -> getGameController().exit());
 

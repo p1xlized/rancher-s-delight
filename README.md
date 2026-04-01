@@ -11,30 +11,10 @@ You walk around, prepare ground, plant seeds, and watch crops grow.
 - FXGL (game engine stuff)
 - Maven (build tool)
 
-## How to run the game
-
-From project root:
+## How to RUN the game JAR
 
 ```bash
-./mvnw javafx:run
-```
-
-## How to build the game JAR
-
-From project root:
-
-```bash
-./mvnw clean package -DskipTests
-```
-
-After build, share this file:
-
-- `target/ranchers_delight-1.7-fat.jar`
-
-Run it with:
-
-```bash
-java -jar target/ranchers_delight-1.7-fat.jar
+java -jar target/ranchers_delight.jar
 ```
 
 ## Controls
@@ -51,6 +31,4 @@ java -jar target/ranchers_delight-1.7-fat.jar
 - Player progress is also saved (position, level, inventory)
 
 ## Notes
-
-- If build fails because of Java version, check your JDK version.
 - This project is currently set in `pom.xml` to compile with Java `25`.
