@@ -4,6 +4,8 @@ import com.example.ranchers_delight.components.Item;
 import com.example.ranchers_delight.entities.Player;
 import com.example.ranchers_delight.utils.Rarity;
 import javafx.geometry.Pos;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -11,8 +13,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 
@@ -24,6 +29,9 @@ public class InventoryUI {
 
     private final List<Rectangle> slots = new ArrayList<>();
     private final List<Text> hotbarItemTexts = new ArrayList<>();
+    private final List<ImageView> hotbarItemIcons = new ArrayList<>();
+    private final List<Text> hotbarCountTexts = new ArrayList<>();
+    private final Map<String, Image> iconCache = new HashMap<>();
     private final Rectangle selector;
     private final Text playerHeader = new Text("No Player");
     private final VBox inventoryList = new VBox(8);
@@ -61,11 +69,27 @@ public class InventoryUI {
             itemText.setTranslateX(x + 8);
             itemText.setTranslateY(startY + slotSize - 8);
 
+            var icon = new ImageView();
+            icon.setFitWidth(34);
+            icon.setFitHeight(34);
+            icon.setPreserveRatio(true);
+            icon.setTranslateX(x + (slotSize - 34) / 2);
+            icon.setTranslateY(startY + 16);
+
+            var countText = new Text("");
+            countText.setFill(Color.GOLD);
+            countText.setTranslateX(x + slotSize - 16);
+            countText.setTranslateY(startY + slotSize - 12);
+
             addUINode(slot);
             addUINode(hint);
+            addUINode(icon);
+            addUINode(countText);
             addUINode(itemText);
             slots.add(slot);
             hotbarItemTexts.add(itemText);
+            hotbarItemIcons.add(icon);
+            hotbarCountTexts.add(countText);
         }
 
         selector = new Rectangle(slotSize + 8, slotSize + 8, Color.TRANSPARENT);
@@ -142,7 +166,7 @@ public class InventoryUI {
         vbox.getChildren().add(new Text("RANCHER'S SHOP"));
 
         Button btnBuySeeds = new Button("BUY SEEDS - $10");
-        btnBuySeeds.setOnAction(e -> buyItem(new Item("Seeds", Rarity.COMMON)));
+        btnBuySeeds.setOnAction(e -> buyItem(new Item("Seeds", Rarity.COMMON, 5)));
 
         Button btnBuyFence = new Button("BUY FENCE - $5");
         btnBuyFence.setOnAction(e -> buyItem(new Item("Fence", Rarity.UNCOMMON)));
@@ -166,6 +190,8 @@ public class InventoryUI {
             playerHeader.setText("No Player");
             inventoryList.getChildren().setAll(new Text("Spawn player to see inventory."));
             hotbarItemTexts.forEach(text -> text.setText("-"));
+            hotbarItemIcons.forEach(icon -> icon.setImage(null));
+            hotbarCountTexts.forEach(text -> text.setText(""));
             return;
         }
 
@@ -174,10 +200,15 @@ public class InventoryUI {
 
         for (int i = 0; i < numSlots; i++) {
             Item item = player.getItemInSlot(i);
-            String label = (item == null) ? "[empty]" : item.getName() + " [" + item.getRarity().getLabel() + "]";
+            String label = (item == null)
+                    ? "[empty]"
+                    : item.getName() + " x" + item.getQuantity() + " [" + item.getRarity().getLabel() + "]";
 
             if (i < hotbarItemTexts.size()) {
-                hotbarItemTexts.get(i).setText(shortName(item));
+                Image iconImage = resolveItemIcon(item);
+                hotbarItemIcons.get(i).setImage(iconImage);
+                hotbarItemTexts.get(i).setText(iconImage == null ? shortName(item) : "");
+                hotbarCountTexts.get(i).setText(item != null && item.getQuantity() > 1 ? String.valueOf(item.getQuantity()) : "");
             }
 
             Text row = new Text((i + 1) + ": " + label);
@@ -205,6 +236,40 @@ public class InventoryUI {
 
         String name = item.getName();
         return name.length() <= 7 ? name : name.substring(0, 7);
+    }
+
+    private Image resolveItemIcon(Item item) {
+        if (item == null || item.getName() == null) {
+            return null;
+        }
+
+        String key = item.getName().toLowerCase();
+        if (iconCache.containsKey(key)) {
+            return iconCache.get(key);
+        }
+
+        String path;
+        if ("hoe".equals(key)) {
+            path = "/com/example/ranchers_delight/objects/hoe.png";
+        } else if ("seed".equals(key) || "seeds".equals(key)) {
+            path = "/com/example/ranchers_delight/objects/seeds_bundle.png";
+        } else {
+            iconCache.put(key, null);
+            return null;
+        }
+
+        Image image = loadImage(path);
+        iconCache.put(key, image);
+        return image;
+    }
+
+    private Image loadImage(String path) {
+        InputStream stream = getClass().getResourceAsStream(path);
+        if (stream == null) {
+            return null;
+        }
+
+        return new Image(stream);
     }
 
     private void switchTab(boolean showInv) {

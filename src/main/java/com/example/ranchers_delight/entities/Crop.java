@@ -42,6 +42,16 @@ public abstract class Crop {
         System.out.println("The crop has withered.");
     }
 
+    protected void incrementCycle() {
+        cycles++;
+    }
+
+    protected boolean advanceGrowthStage() {
+        GrowthStage before = stage;
+        grow();
+        return before != stage;
+    }
+
     // Getters
     public GrowthStage getStage() { return stage; }
     public boolean isAlive() { return isAlive; }

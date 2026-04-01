@@ -6,6 +6,7 @@ import com.almasb.fxgl.entity.components.CollidableComponent;
 import com.example.ranchers_delight.components.GreenTileComponent;
 import com.example.ranchers_delight.components.BrownTileComponent;
 import com.example.ranchers_delight.components.Item;
+import com.example.ranchers_delight.components.PlayerAnimationComponent;
 import com.example.ranchers_delight.entities.Player;
 import com.example.ranchers_delight.utils.EntityType;
 import com.example.ranchers_delight.utils.Rarity;
@@ -67,12 +68,13 @@ public class GameFactory implements EntityFactory {
 
         Player playerModel = new Player(playerName, level);
         // Starter kit so the hotbar and inventory are populated on first load.
-        playerModel.addItemToInventory(new Item("Seeds", Rarity.COMMON));
+        playerModel.addItemToInventory(new Item("Seeds", Rarity.COMMON, 10));
         playerModel.addItemToInventory(new Item("Hoe", Rarity.UNCOMMON));
 
         Entity entity = entityBuilder(data)
                 .type(EntityType.PLAYER)
-                .viewWithBBox(new Rectangle(25, 25, Color.BLUE))
+                .viewWithBBox(new Rectangle(50, 50, Color.TRANSPARENT))
+                .with(new PlayerAnimationComponent())
                 .with(new CollidableComponent(true))
                 .zIndex(10)
                 .build();

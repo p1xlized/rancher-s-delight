@@ -2,7 +2,9 @@ package com.example.ranchers_delight.world;
 
 import java.io.*;
 import java.nio.file.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class MapGenerator {
@@ -96,5 +98,40 @@ public class MapGenerator {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void savePlayerProgress(String fileName, Map<String, String> data) {
+        Path path = Paths.get(SAVE_DIR, fileName + ".player");
+        try (BufferedWriter writer = Files.newBufferedWriter(path)) {
+            for (Map.Entry<String, String> entry : data.entrySet()) {
+                writer.write(entry.getKey() + "=" + entry.getValue());
+                writer.write("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Map<String, String> loadPlayerProgress(String fileName) {
+        Path path = Paths.get(SAVE_DIR, fileName + ".player");
+        Map<String, String> data = new HashMap<>();
+
+        if (!Files.exists(path)) {
+            return data;
+        }
+
+        try {
+            List<String> lines = Files.readAllLines(path);
+            for (String line : lines) {
+                String[] parts = line.split("=", 2);
+                if (parts.length == 2) {
+                    data.put(parts[0], parts[1]);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return data;
     }
 }

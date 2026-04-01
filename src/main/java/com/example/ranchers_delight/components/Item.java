@@ -6,10 +6,16 @@ public class Item
 {
     public String name;
     public Rarity rarity;
+    private int quantity;
 
     public Item(String name, Rarity rarity) {
+        this(name, rarity, 1);
+    }
+
+    public Item(String name, Rarity rarity, int quantity) {
         this.name = name;
         this.rarity = rarity;
+        this.quantity = Math.max(1, quantity);
     }
 
     public String getName() {
@@ -18,6 +24,29 @@ public class Item
 
     public Rarity getRarity() {
         return rarity;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = Math.max(1, quantity);
+    }
+
+    public void addQuantity(int amount) {
+        if (amount > 0) {
+            this.quantity += amount;
+        }
+    }
+
+    public boolean consumeOne() {
+        if (quantity <= 0) {
+            return false;
+        }
+
+        quantity--;
+        return true;
     }
 
     public void setName(String name) {
